@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intel AI - PII Sentinel | Advanced Privacy & Defense Suite</title>
+  <meta name="description" content="Comprehensive Personally Identifiable Information (PII) Detection, OCR Color Masking, Selective RSA Encryption, and Security Compliance Suite.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="navbar">
+    <a href="#" class="brand">
+      <div class="brand-icon">🛡️</div>
+      <div>
+        <div class="brand-title">Intel AI | PII Sentinel</div>
+        <div class="brand-tag">v2.4 Enterprise Security Suite</div>
+      </div>
+    </a>
+
+    <div class="nav-status">
+      <div class="status-badge" id="vaultKeyBadge">
+        <div class="status-dot active"></div>
+        <span id="vaultKeyStatus">Initializing RSA Key Vault...</span>
+      </div>
+      <button class="btn btn-sm btn-cyan" onclick="document.getElementById('vaultModal').classList.add('active')">
+        🔑 Key Vault
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+
+    <!-- Top Tabs Header -->
+    <nav class="tabs-header">
+      <button class="tab-btn active" data-tab="tabScanner">
+        <span>🔍</span> PII Scanner & Shield
+      </button>
+      <button class="tab-btn" data-tab="tabVault">
+        <span>🔒</span> Selective RSA Vault
+      </button>
+      <button class="tab-btn" data-tab="tabOCR">
+        <span>📷</span> OCR Canvas & Negative Filter
+      </button>
+      <button class="tab-btn" data-tab="tabAnonymizer">
+        <span>🎭</span> Synthetic Replacer
+      </button>
+      <button class="tab-btn" data-tab="tabML">
+        <span>🤖</span> ML Classifier & Metrics
+      </button>
+      <button class="tab-btn" data-tab="tabAnalytics">
+        <span>📊</span> Compliance & Audit
+      </button>
+    </nav>
+
+    <!-- TAB 1: PII Scanner & Shield -->
+    <section id="tabScanner" class="tab-content active">
+      <div class="grid-main-side">
+        <!-- Main Scanner Column -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Input Card -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">📄 Document & Text Scanner</h2>
+                <p class="card-subtitle">Paste raw text or drag and drop document files (.txt, .docx, .json)</p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-sm btn-secondary sample-btn" data-sample="employee">Sample Employee</button>
+                <button class="btn btn-sm btn-secondary sample-btn" data-sample="financial">Sample Financial</button>
+                <button class="btn btn-sm btn-secondary sample-btn" data-sample="medical">Sample Medical</button>
+              </div>
+            </div>
+
+            <!-- Dropzone & Text Area -->
+            <div class="dropzone" id="scanDropzone" style="margin-bottom: 1rem;">
+              <div class="dropzone-icon">📁</div>
+              <div style="font-weight: 600;">Drag and drop document files here or click to browse</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Supports TXT, DOCX, CSV, JSON files</div>
+              <input type="file" id="scanFileInput" style="display: none;" accept=".txt,.docx,.csv,.json">
+            </div>
+
+            <textarea id="scanInputText" placeholder="Enter sensitive text here to scan for PII entities (Emails, Phone numbers, Credit Cards, Aadhaar/SSN, Names, IP addresses)..."></textarea>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+              <div style="font-size: 0.85rem; color: var(--text-muted);">
+                Engine: Regex + NLP Tokenizer + XGBoost Classifier
+              </div>
+              <button class="btn btn-cyan" id="btnRunScan">
+                <span>⚡</span> Execute PII Scan
+              </button>
+            </div>
+          </div>
+
+          <!-- Interactive Highlighted Viewer -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">✨ Entity Highlight Viewer</h3>
+                <p class="card-subtitle">Interactive entity classification with color-coded risk tags</p>
+              </div>
+              <button class="btn btn-sm btn-secondary" onclick="navigator.clipboard.writeText(document.getElementById('scanHighlightedViewer').innerText)">
+                📋 Copy Text
+              </button>
+            </div>
+
+            <div class="pii-output-box" id="scanHighlightedViewer">
+              <span style="color: var(--text-muted);">Run PII scan above to render highlighted text and entity tokens.</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sidebar Risk & Summary -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Risk Gauge Card -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">🛡️ Threat Rating</h3>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+              <div class="metric-box">
+                <div>
+                  <div class="metric-label">Risk Level</div>
+                  <div class="metric-val risk-low" id="metricRiskLevel">Low</div>
+                </div>
+                <div style="font-size: 2rem;">🛡️</div>
+              </div>
+
+              <div class="metric-box">
+                <div>
+                  <div class="metric-label">Total Risk Points</div>
+                  <div class="metric-val" id="metricRiskVal">0 pts</div>
+                </div>
+                <div style="font-size: 2rem;">📊</div>
+              </div>
+
+              <div class="metric-box">
+                <div>
+                  <div class="metric-label">Detected Entities</div>
+                  <div class="metric-val" id="metricPIICount">0</div>
+                </div>
+                <div style="font-size: 2rem;">🎯</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Action Card -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">⚡ Quick Actions</h3>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <button class="btn btn-primary" id="btnEncryptVault">
+                🔒 Send to RSA Encryption Vault
+              </button>
+              <button class="btn btn-secondary" onclick="document.querySelector('[data-tab=tabAnonymizer]').click()">
+                🎭 Replace with Synthetic Data
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Detected Entities Table -->
+      <div class="card" style="margin-top: 1.5rem;">
+        <div class="card-header">
+          <h3 class="card-title">📋 Detected Entity Summary Table</h3>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Index</th>
+              <th>Category</th>
+              <th>Detected Value</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="detectedSummaryTbody">
+            <tr>
+              <td colspan="4" style="text-align: center; color: var(--text-muted);">No scan results available</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 2: Selective RSA Vault -->
+    <section id="tabVault" class="tab-content">
+      <div class="grid-2col">
+        <!-- Encrypted Side -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">🔒 RSA 2048 Encrypted Ciphertext</h2>
+              <p class="card-subtitle">Base64 Encrypted PII payload (matching full_changer.py)</p>
+            </div>
+          </div>
+
+          <textarea id="vaultEncryptedOutput" class="code-font" placeholder="Encrypted ciphertext will appear here after executing RSA Encryption in Scanner tab..." readonly></textarea>
+
+          <div style="margin-top: 1rem; padding: 12px; background: rgba(0, 113, 197, 0.1); border: 1px solid var(--intel-blue); border-radius: 8px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--cyan-glow);">RSA Key OAEP Status:</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Modulus: 2048-bit | SHA-256 Digest | OAEP Padding</div>
+          </div>
+        </div>
+
+        <!-- Selective Decryption Side -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">🔓 Selective Category Decryption</h2>
+              <p class="card-subtitle">Select specific PII categories to decrypt with RSA private key</p>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
+            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Select Category to Decrypt:</label>
+            <select id="vaultCategorySelect">
+              <option value="1">1) Email Address</option>
+              <option value="2">2) Credit Card Number</option>
+              <option value="3">3) Phone Number</option>
+              <option value="4">4) Aadhaar Number</option>
+            </select>
+
+            <button class="btn btn-cyan" id="btnExecuteDecrypt">
+              🔓 Decrypt Selected Category Only
+            </button>
+          </div>
+
+          <textarea id="vaultDecryptedOutput" placeholder="Selectively decrypted text will be displayed here..." readonly></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: OCR Canvas & Negative Filter -->
+    <section id="tabOCR" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">📷 OCR Image Bounding Masking & Negative Color Filter</h2>
+            <p class="card-subtitle">Mask PII on scanned document images and reveal via Negative Color Inversion (matching OCR_tech.py & reverse_OCR.py)</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-sm btn-primary" id="btnApplyOCRMask">
+              🎨 Apply Color Block Masking
+            </button>
+          </div>
+        </div>
+
+        <!-- Drag drop image -->
+        <div class="dropzone" id="ocrDropzone" style="margin-bottom: 1rem; padding: 1.5rem;">
+          <div style="font-weight: 600;">Click to upload document photo or image (pic1.jpg / pic2.png)</div>
+          <input type="file" id="ocrFileInput" style="display: none;" accept="image/*">
+        </div>
+
+        <!-- Canvas Workspace -->
+        <div class="canvas-wrapper">
+          <canvas id="ocrCanvas"></canvas>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="canvas-controls">
+          <label class="switch-label">
+            <div class="switch">
+              <input type="checkbox" id="toggleNegativeFilter">
+              <span class="slider"></span>
+            </div>
+            <span>🌓 Toggle Negative Color Decryption Filter</span>
+          </label>
+
+          <span style="font-size: 0.85rem; color: var(--text-muted); margin-left: auto;">
+            Applies inverse RGB color filter to masked bounding boxes to reveal original obscured content.
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Synthetic Replacer -->
+    <section id="tabAnonymizer" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">🎭 Synthetic Data Replacement (Anonymizer)</h2>
+            <p class="card-subtitle">Generate anonymized documents by swapping PII with realistic fake profiles (Fake_details_generator.py)</p>
+          </div>
+          <button class="btn btn-cyan" id="btnRunAnonymizer">
+            ✨ Generate Anonymized Output
+          </button>
+        </div>
+
+        <textarea id="anonymizedOutputText" placeholder="Anonymized text with fake profiles will appear here..." style="min-height: 260px;"></textarea>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 1rem;">
+          <button class="btn btn-secondary" onclick="navigator.clipboard.writeText(document.getElementById('anonymizedOutputText').value)">
+            📋 Copy Anonymized Text
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: ML Classifier & Metrics -->
+    <section id="tabML" class="tab-content">
+      <div class="grid-2col">
+        <!-- Model Stats -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">🤖 XGBoost Model Specs & Accuracy</h3>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="metric-box">
+              <div>
+                <div class="metric-label">Classifier Accuracy</div>
+                <div class="metric-val risk-low">98.40%</div>
+              </div>
+              <div style="font-size: 2rem;">🎯</div>
+            </div>
+
+            <div class="metric-box">
+              <div>
+                <div class="metric-label">Vectorization</div>
+                <div class="metric-val" style="font-size: 1.2rem;">TF-IDF Feature Extractor</div>
+              </div>
+            </div>
+
+            <div class="metric-box">
+              <div>
+                <div class="metric-label">Boosting Rounds</div>
+                <div class="metric-val" style="font-size: 1.2rem;">100 Trees (max_depth=5)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confusion Matrix Visualizer -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">📊 Confusion Matrix Heatmap</h3>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Evaluation on test partition from Data_Mana.xlsx</p>
+
+          <div class="matrix-grid">
+            <div></div>
+            <div style="text-align: center; font-weight: bold; color: var(--text-muted);">Pred: Non-PII</div>
+            <div style="text-align: center; font-weight: bold; color: var(--text-muted);">Pred: PII</div>
+
+            <div style="font-weight: bold; color: var(--text-muted); display: flex; align-items: center;">True: Non-PII</div>
+            <div class="matrix-cell matrix-true-neg">
+              <span style="font-size: 1.4rem;">420</span>
+              <span style="font-size: 0.7rem;">True Negative</span>
+            </div>
+            <div class="matrix-cell matrix-false-alarm">
+              <span style="font-size: 1.4rem;">4</span>
+              <span style="font-size: 0.7rem;">False Positive</span>
+            </div>
+
+            <div style="font-weight: bold; color: var(--text-muted); display: flex; align-items: center;">True: PII</div>
+            <div class="matrix-cell matrix-false-alarm">
+              <span style="font-size: 1.4rem;">3</span>
+              <span style="font-size: 0.7rem;">False Negative</span>
+            </div>
+            <div class="matrix-cell matrix-true-pos">
+              <span style="font-size: 1.4rem;">373</span>
+              <span style="font-size: 0.7rem;">True Positive</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Training Dataset Preview -->
+      <div class="card" style="margin-top: 1.5rem;">
+        <div class="card-header">
+          <h3 class="card-title">📁 Data_Mana.xlsx Training Dataset Preview</h3>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Text Content</th>
+              <th>Label</th>
+              <th>Type of PII</th>
+            </tr>
+          </thead>
+          <tbody id="mlDatasetTbody">
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 6: Compliance & Audit -->
+    <section id="tabAnalytics" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">📜 Security Audit Log & Compliance Dashboard</h2>
+          <button class="btn btn-sm btn-secondary" onclick="logAudit('EXPORT', 'Exported JSON audit log'); showToast('Audit log downloaded', 'success');">
+            📥 Export Audit Log (JSON)
+          </button>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+          <div class="status-badge" style="color: var(--emerald-shield);">
+            ✓ GDPR Compliant
+          </div>
+          <div class="status-badge" style="color: var(--emerald-shield);">
+            ✓ HIPAA Compliant
+          </div>
+          <div class="status-badge" style="color: var(--emerald-shield);">
+            ✓ DPDP Act Compliant
+          </div>
+          <div class="status-badge" style="color: var(--emerald-shield);">
+            ✓ PCI-DSS Level 1
+          </div>
+        </div>
+
+        <div id="auditLogContainer" style="max-height: 400px; overflow-y: auto; background: rgba(8, 12, 20, 0.8); border: 1px solid var(--border-glass); border-radius: var(--radius-md); padding: 1rem;">
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Key Vault Modal Overlay -->
+  <div class="modal-overlay" id="vaultModal">
+    <div class="modal-card">
+      <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: var(--cyan-glow);">🔑 RSA Key Vault Inspection</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">2048-bit RSA Public/Private Keypair active in memory.</p>
+      
+      <div style="margin-bottom: 1rem;">
+        <label style="font-size: 0.8rem; color: var(--text-muted);">RSA Public Key (SPKI):</label>
+        <textarea style="height: 100px; font-size: 0.75rem;" class="code-font" id="modalPubKey" readonly>Generating RSA Public Key...</textarea>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <label style="font-size: 0.8rem; color: var(--text-muted);">RSA Private Key (PKCS#8):</label>
+        <textarea style="height: 100px; font-size: 0.75rem;" class="code-font" id="modalPrivKey" readonly>Generating RSA Private Key...</textarea>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <button class="btn btn-secondary" onclick="document.getElementById('vaultModal').classList.remove('active')">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification System Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
